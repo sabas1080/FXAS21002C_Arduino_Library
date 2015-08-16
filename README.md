@@ -1,8 +1,7 @@
-FXOS8700CQ-Arduino
+FXAS21002C-Arduino
 ==================
 
-Arduino library for the Xtrinsic FXOS8700CQ 6-Axis Sensor with Integrated Linear Accelerometer and Magnetometer
-
+Arduino library for the FXAS21002C 3-Axis Digital Angular Rate Gyroscope
 # Install
 
 ## Recommended
@@ -12,7 +11,7 @@ Arduino library for the Xtrinsic FXOS8700CQ 6-Axis Sensor with Integrated Linear
 
 ## Command-line
 * Navigate to the Arduino library folder
-* Clone this github repo into the FXOS8700CQ folder
+* Clone this github repo into the FXAS21002C folder
 * Include code into your project and enjoy!
 
 # Usage
