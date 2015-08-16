@@ -16,3 +16,6 @@ Arduino library for the FXAS21002C 3-Axis Digital Angular Rate Gyroscope
 
 # Usage
 To be continued...
+
+By Andres Sabas Agosto 2015
+for BuildNight Instructables of The Inventor's House and Freescale
