@@ -96,6 +96,9 @@ class FXAS21002C
 	// Resolution
 	float getGres(void);
 
+	//Calibrate
+	void calibrate(float * gBias);
+
 	private:
 	// Sensor address
 	byte address;

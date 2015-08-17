@@ -7,7 +7,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();
   
-  // Initialize the FXOS8700CQ
+  // Initialize the FXAS21002C
   sensor.init();
 }
 
