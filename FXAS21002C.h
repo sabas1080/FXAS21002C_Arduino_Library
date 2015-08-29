@@ -88,6 +88,7 @@ class FXAS21002C
 	void init(void);
 	void standby(void);
 	void active(void);
+	void ready(void);
 
 	// Query sensor data
 	void readGyroData(void);
@@ -98,6 +99,9 @@ class FXAS21002C
 
 	//Calibrate
 	void calibrate(float * gBias);
+
+	//Reset
+	void reset(void);
 
 	private:
 	// Sensor address

@@ -1,5 +1,4 @@
 FXAS21002C-Arduino [![Build Status](https://travis-ci.org/sabas1080/FXAS21002C_Arduino_Library.svg?branch=master)](https://travis-ci.org/sabas1080/FXAS21002C_Arduino_Library)
-
 ================== 
 
 Arduino library for the FXAS21002C 3-Axis Digital Angular Rate Gyroscope

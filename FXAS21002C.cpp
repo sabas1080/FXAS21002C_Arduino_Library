@@ -63,6 +63,14 @@ void FXAS21002C::standby()
 	byte c = readReg(FXAS21002C_H_CTRL_REG1);
 	writeReg(FXAS21002C_H_CTRL_REG1, c & ~(0x03));// Clear bits 0 and 1; standby mode
 }
+// Sets the FXAS21000 to active mode.
+// Needs to be in this mode to output data
+void FXAS21002C::ready()
+{
+  byte c = readReg(FXAS21002C_H_CTRL_REG1);
+  writeReg(FXAS21002C_H_CTRL_REG1, c & ~(0x03));  // Clear bits 0 and 1; standby mode
+  writeReg(FXAS21002C_H_CTRL_REG1, c |   0x01);   // Set bit 0 to 1, ready mode; no data acquisition yet
+}
 
 // Put the FXAS21002C into active mode.
 // Needs to be in this mode to output data.
@@ -77,13 +85,11 @@ void FXAS21002C::init()
 {
 	standby();  // Must be in standby to change registers
 
-	// Set up the full scale range to 200, 400, 800, or 1600 deg/s.
+	// Set up the full scale range to 250, 500, 1000, or 2000 deg/s.
 	writeReg(FXAS21002C_H_CTRL_REG0, gyroFSR); 
 	 // Setup the 3 data rate bits, 4:2
 	if (gyroODR < 8) 
 		writeReg(FXAS21002C_H_CTRL_REG1, gyroODR << 2);      
-	//writeReg(FXOS8700CQ_CTRL_REG2, readReg(FXOS8700CQ_CTRL_REG2) & ~(0x03)); // clear bits 0 and 1
-	//writeReg(FXOS8700CQ_CTRL_REG2, readReg(FXOS8700CQ_CTRL_REG2) |  (0x02)); // select normal(00) or high resolution (10) mode
 
 	// Disable FIFO, route FIFO and rate threshold interrupts to INT2, enable data ready interrupt, route to INT1
   	// Active HIGH, push-pull output driver on interrupts
@@ -106,8 +112,7 @@ void FXAS21002C::init()
 // Read the gyroscope data
 void FXAS21002C::readGyroData()
 {
-	uint8_t rawData[6];  // x/y/z accel register data stored here
-
+	uint8_t rawData[6];  // x/y/z gyro register data stored here
 	readRegs(FXAS21002C_H_OUT_X_MSB, 6, &rawData[0]);  // Read the six raw data registers into data array
 	gyroData.x = ((int16_t) rawData[0] << 8 | rawData[1]) >> 2;
 	gyroData.y = ((int16_t) rawData[2] << 8 | rawData[3]) >> 2;
@@ -177,7 +182,15 @@ void FXAS21002C::calibrate(float * gBias)
   gBias[1] = (float)gyro_bias[1]/(float) gyrosensitivity; // get average values
   gBias[2] = (float)gyro_bias[2]/(float) gyrosensitivity; // get average values
 
-  init();  // Set to ready
+  ready();  // Set to ready
 }
 
+void FXAS21002C::reset() 
+{
+	writeReg(FXAS21002C_H_CTRL_REG1, 0x20); // set reset bit to 1 to assert software reset to zero at end of boot process
+	delay(100);
+while(!(readReg(FXAS21002C_H_INT_SRC_FLAG) & 0x08))  { // wait for boot end flag to be set
+}
+
+}
 // Private Methods //////////////////////////////////////////////////////////////
