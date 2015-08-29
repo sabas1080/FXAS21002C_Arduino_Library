@@ -12,6 +12,7 @@ void setup() {
 }
 
 void loop() {
+  sensor.getGres();
   // Query the sensor
   sensor.readGyroData();
   
