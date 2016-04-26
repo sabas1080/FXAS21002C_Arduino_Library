@@ -114,9 +114,9 @@ void FXAS21002C::readGyroData()
 {
 	uint8_t rawData[6];  // x/y/z gyro register data stored here
 	readRegs(FXAS21002C_H_OUT_X_MSB, 6, &rawData[0]);  // Read the six raw data registers into data array
-	gyroData.x = ((int16_t) rawData[0] << 8 | rawData[1]) >> 2;
-	gyroData.y = ((int16_t) rawData[2] << 8 | rawData[3]) >> 2;
-	gyroData.z = ((int16_t) rawData[4] << 8 | rawData[5]) >> 2;
+	gyroData.x = ((int16_t) (rawData[0] << 8 | rawData[1])) >> 2;
+	gyroData.y = ((int16_t) (rawData[2] << 8 | rawData[3])) >> 2;
+	gyroData.z = ((int16_t) (rawData[4] << 8 | rawData[5])) >> 2;
 }
 
 // Get accelerometer resolution
@@ -163,9 +163,9 @@ void FXAS21002C::calibrate(float * gBias)
   for(ii = 0; ii < fcount; ii++)   // construct count sums for each axis
   {
   readRegs(FXAS21002C_H_OUT_X_MSB, 6, &rawData[0]);  // Read the FIFO data registers into data array
-  temp[0] = ((int16_t) rawData[0] << 8 | rawData[1]) >> 2;
-  temp[1] = ((int16_t) rawData[2] << 8 | rawData[3]) >> 2;
-  temp[2] = ((int16_t) rawData[4] << 8 | rawData[5]) >> 2;
+  temp[0] = ((int16_t) (rawData[0] << 8 | rawData[1])) >> 2;
+  temp[1] = ((int16_t) (rawData[2] << 8 | rawData[3])) >> 2;
+  temp[2] = ((int16_t) (rawData[4] << 8 | rawData[5])) >> 2;
   
   gyro_bias[0] += (int32_t) temp[0];
   gyro_bias[1] += (int32_t) temp[1];
