@@ -85,10 +85,10 @@ void FXAS21002C::init()
 	standby();  // Must be in standby to change registers
 
 	// Set up the full scale range to 250, 500, 1000, or 2000 deg/s.
-	writeReg(FXAS21002C_H_CTRL_REG0, gyroFSR); 
+	writeReg(FXAS21002C_H_CTRL_REG0, 0); 
 	 // Setup the 3 data rate bits, 4:2
 	if (gyroODR < 8) 
-		writeReg(FXAS21002C_H_CTRL_REG1, gyroODR << 2);      
+		writeReg(FXAS21002C_H_CTRL_REG1, gyroODR << 2);   
 
 	// Disable FIFO, route FIFO and rate threshold interrupts to INT2, enable data ready interrupt, route to INT1
   	// Active HIGH, push-pull output driver on interrupts
@@ -113,9 +113,9 @@ void FXAS21002C::readGyroData()
 {
 	uint8_t rawData[6];  // x/y/z gyro register data stored here
 	readRegs(FXAS21002C_H_OUT_X_MSB, 6, &rawData[0]);  // Read the six raw data registers into data array
-	gyroData.x = ((int16_t) (rawData[0] << 8 | rawData[1])) >> 2;
-	gyroData.y = ((int16_t) (rawData[2] << 8 | rawData[3])) >> 2;
-	gyroData.z = ((int16_t) (rawData[4] << 8 | rawData[5])) >> 2;
+	gyroData.x = ((int16_t)(((int16_t)rawData[0]) << 8 | ((int16_t) rawData[1])));
+	gyroData.y = ((int16_t)(((int16_t)rawData[2]) << 8 | ((int16_t) rawData[3])));
+	gyroData.z = ((int16_t)(((int16_t)rawData[4]) << 8 | ((int16_t) rawData[5])));
 }
 
 // Get accelerometer resolution
@@ -126,16 +126,13 @@ float FXAS21002C::getGres(void)
 		// Possible gyro scales (and their register bit settings) are:
   // 250 DPS (11), 500 DPS (10), 1000 DPS (01), and 2000 DPS  (00). 
     case GFS_2000DPS:
-          gRes = 1600.0/8192.0;
-          break;
+          return 2000.0/16384.0;
     case GFS_1000DPS:
-          gRes = 800.0/8192.0;
-          break;
+          return 1000.0/16384.0;
     case GFS_500DPS:
-          gRes = 400.0/8192.0;
-          break;           
+          return 500.0/16384.0;       
     case GFS_250DPS:
-          gRes = 200.0/8192.0;
+          return 250.0/16384.0;
 	}
 }
 
@@ -154,7 +151,7 @@ void FXAS21002C::calibrate(float * gBias)
   writeReg(FXAS21002C_H_CTRL_REG1, 0x08);   // select 50 Hz ODR
   fcount = 50;                                     // sample for 1 second
   writeReg(FXAS21002C_H_CTRL_REG0, 0x03);   // select 200 deg/s full scale
-  uint16_t gyrosensitivity = 41;                   // 40.96 LSB/deg/s
+  uint16_t gyrosensitivity = 16384.0/250.0; // 40.96 LSB/deg/s
 
   active();  // Set to active to start collecting data
    
@@ -162,9 +159,9 @@ void FXAS21002C::calibrate(float * gBias)
   for(ii = 0; ii < fcount; ii++)   // construct count sums for each axis
   {
   readRegs(FXAS21002C_H_OUT_X_MSB, 6, &rawData[0]);  // Read the FIFO data registers into data array
-  temp[0] = ((int16_t) (rawData[0] << 8 | rawData[1])) >> 2;
-  temp[1] = ((int16_t) (rawData[2] << 8 | rawData[3])) >> 2;
-  temp[2] = ((int16_t) (rawData[4] << 8 | rawData[5])) >> 2;
+  temp[0] = ((int16_t)( ((int16_t) rawData[0]) << 8 | ((int16_t) rawData[1])));
+  temp[1] = ((int16_t)( ((int16_t) rawData[2]) << 8 | ((int16_t) rawData[3])));
+  temp[2] = ((int16_t)( ((int16_t) rawData[4]) << 8 | ((int16_t) rawData[5])));
   
   gyro_bias[0] += (int32_t) temp[0];
   gyro_bias[1] += (int32_t) temp[1];
