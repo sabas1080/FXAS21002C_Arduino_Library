@@ -10,7 +10,7 @@ FXAS21002C::FXAS21002C(byte addr)
 {
 	address = addr;
 	gyroODR = GODR_200HZ; // In hybrid mode, accel/mag data sample rates are half of this value
-	gyroFSR = GFS_250DPS;
+	gyroFSR = GFS_500DPS
 }
 
 void FXAS21002C::writeReg(byte reg, byte value)
@@ -85,7 +85,8 @@ void FXAS21002C::init()
 	standby();  // Must be in standby to change registers
 
 	// Set up the full scale range to 250, 500, 1000, or 2000 deg/s.
-	writeReg(FXAS21002C_H_CTRL_REG0, 0); 
+	gyroFSR = GFS_500DPS;
+	writeReg(FXAS21002C_H_CTRL_REG0, GFS_500DPS);
 	 // Setup the 3 data rate bits, 4:2
 	if (gyroODR < 8) 
 		writeReg(FXAS21002C_H_CTRL_REG1, gyroODR << 2);   
@@ -99,7 +100,7 @@ void FXAS21002C::init()
   	writeReg(FXAS21002C_H_RT_THS, 0x00 | 0x0D);  // unsigned 7-bit THS, set to one-tenth FSR; set clearing debounce counter
   	writeReg(FXAS21002C_H_RT_COUNT, 0x04);       // set to 4 (can set up to 255)         
 	// Configure interrupts 1 and 2
-	//writeReg(CTRL_REG3, readReg(CTRL_REG3) & ~(0x02)); // clear bits 0, 1 
+	writeReg(CTRL_REG3, readReg(CTRL_REG3), 0x00)); // clear bits 0, 1 
 	//writeReg(CTRL_REG3, readReg(CTRL_REG3) |  (0x02)); // select ACTIVE HIGH, push-pull interrupts    
 	//writeReg(CTRL_REG4, readReg(CTRL_REG4) & ~(0x1D)); // clear bits 0, 3, and 4
 	//writeReg(CTRL_REG4, readReg(CTRL_REG4) |  (0x1D)); // DRDY, Freefall/Motion, P/L and tap ints enabled  
@@ -151,7 +152,7 @@ void FXAS21002C::calibrate(float * gBias)
   writeReg(FXAS21002C_H_CTRL_REG1, 0x08);   // select 50 Hz ODR
   fcount = 50;                                     // sample for 1 second
   writeReg(FXAS21002C_H_CTRL_REG0, 0x03);   // select 200 deg/s full scale
-  uint16_t gyrosensitivity = 16384.0/250.0; // 40.96 LSB/deg/s
+  float gyrosensitivity = 32000.0/250.0; //GFS_250DPS;
 
   active();  // Set to active to start collecting data
    
