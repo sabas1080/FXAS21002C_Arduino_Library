@@ -100,7 +100,7 @@ void FXAS21002C::init()
   	writeReg(FXAS21002C_H_RT_THS, 0x00 | 0x0D);  // unsigned 7-bit THS, set to one-tenth FSR; set clearing debounce counter
   	writeReg(FXAS21002C_H_RT_COUNT, 0x04);       // set to 4 (can set up to 255)         
 	// Configure interrupts 1 and 2
-	writeReg(CTRL_REG3, readReg(CTRL_REG3), 0x00)); // clear bits 0, 1 
+	writeReg(FXAS21002C_H_CTRL_REG3, 0x00)); // clear bits 0, 1 
 	//writeReg(CTRL_REG3, readReg(CTRL_REG3) |  (0x02)); // select ACTIVE HIGH, push-pull interrupts    
 	//writeReg(CTRL_REG4, readReg(CTRL_REG4) & ~(0x1D)); // clear bits 0, 3, and 4
 	//writeReg(CTRL_REG4, readReg(CTRL_REG4) |  (0x1D)); // DRDY, Freefall/Motion, P/L and tap ints enabled  
