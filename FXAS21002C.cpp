@@ -10,7 +10,7 @@ FXAS21002C::FXAS21002C(byte addr)
 {
 	address = addr;
 	gyroODR = GODR_200HZ; // In hybrid mode, accel/mag data sample rates are half of this value
-	gyroFSR = GFS_500DPS
+	gyroFSR = GFS_500DPS;
 }
 
 void FXAS21002C::writeReg(byte reg, byte value)
